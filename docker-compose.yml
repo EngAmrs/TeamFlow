@@ -20,7 +20,7 @@ services:
     ports:
       - "5050:3000"
     volumes:
-      - .:/app
+      - .:/TeamFlow
     depends_on:
       - db
     env_file:

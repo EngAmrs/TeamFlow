@@ -1,9 +1,27 @@
 FROM ruby:3.2.2
+
+# Install system dependencies
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs postgresql-client
+
+# Install Bundler
+RUN gem install bundler
+
+# Set working directory
 WORKDIR /TeamFlow
-ADD Gemfile /TeamFlow/Gemfile
-ADD Gemfile.lock /TeamFlow/Gemfile.lock
+
+# Copy Gemfile and Gemfile.lock and install gems
+COPY Gemfile Gemfile.lock ./
 RUN bundle install
-ADD . .
+
+# Copy entrypoint script and give it executable permissions
+COPY entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose port
 EXPOSE 3000
-CMD ["rails", "server", "-b", "0.0.0.0"]
+
+# Set the command to run the entrypoint script
+CMD ["./entrypoint.sh"]
